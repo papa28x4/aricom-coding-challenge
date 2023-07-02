@@ -6,6 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\HtmlString;
 
 class AccountActivation extends Notification
 {
@@ -40,10 +41,22 @@ class AccountActivation extends Notification
      */
     public function toMail($notifiable)
     {
-        return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+        if($notifiable->active){
+            return (new MailMessage)
+                ->subject('Account Activated')
+                ->greeting("Hello {$notifiable->name}!")
+                ->line('Your account has been activated. You can now log in.')
+                ->action('Click to login', url('/login'))
+                ->line('Thank you for using our application!')
+                ->salutation(new HtmlString("Best Regards, <br>Admin"));
+        }else{
+            return (new MailMessage)
+            ->subject('Deactivation of Account')
+            ->greeting("Hello {$notifiable->name}!")
+            ->line('Your account has been deactivated. We regret any inconvenience')
+            ->salutation(new HtmlString("Best Regards, <br>Admin"));
+        }
+      
     }
 
     /**
