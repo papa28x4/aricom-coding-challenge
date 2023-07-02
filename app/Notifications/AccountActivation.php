@@ -8,9 +8,11 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\HtmlString;
 
-class AccountActivation extends Notification
+class AccountActivation extends Notification implements ShouldQueue
 {
     use Queueable;
+
+    public $tries = 5;
 
     /**
      * Create a new notification instance.
@@ -56,7 +58,6 @@ class AccountActivation extends Notification
             ->line('Your account has been deactivated. We regret any inconvenience')
             ->salutation(new HtmlString("Best Regards, <br>Admin"));
         }
-      
     }
 
     /**
